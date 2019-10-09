@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.BookDao">
+	<resultMap type="book" id="bookMap">
+		<id property="id" column="id"/>
+		<result property="categoryName" column="cname"/>
+		<result property="name" column="name"/>
+		<result property="author" column="author"/>
+		<result property="cover" column="cover"/>
+		<result property="press" column="press"/>
+		<result property="pressDate" column="press_date"/>
+		<result property="edition" column="edition"/>
+		<result property="printDate" column="print_Date"/>
+		<result property="impression" column="impression"/>
+		<result property="isbn" column="isbn"/>
+		<result property="wordNum" column="word_Num"/>
+		<result property="pageNum" column="page_Num"/>
+		<result property="size" column="size"/>
+		<result property="paper" column="paper"/>
+		<result property="pack" column="pack"/>
+		<result property="price" column="price"/>
+		<result property="dprice" column="dprice"/>
+		<result property="createDate" column="create_Date"/>
+		<result property="editorRecommend" column="editor_Recommend"/>
+		<result property="contentAbstract" column="content_Abstract"/>
+		<result property="authorAbstract" column="author_Abstract"/>
+		<result property="director" column="director"/>
+		<result property="mediaCommentary" column="media_Commentary"/>
+		<result property="sale" column="sale"/>
+		<result property="stock" column="stock"/>
+		<result property="categoryId" column="category_Id"/>
+	</resultMap>
+	<select id="selectAllBooks" resultMap="bookMap">
+		select e.*,e1.name cname from d_book e left join d_category e1 on e.category_id=e1.id
+	</select>
+	<insert id="addBook" parameterType="book">
+		insert into d_book values (#{id},#{name},#{author},#{cover},#{press},#{pressDate},
+		#{edition},#{printDate},#{impression},#{isbn},#{wordNum},#{pageNum},#{size},
+		#{paper},#{pack},#{price},#{dprice},#{createDate},#{editorRecommend},#{contentAbstract}
+		,#{authorAbstract},#{director},#{mediaCommentary},#{sale},#{stock},#{categoryId})
+	</insert>
+	<select id="selectBooksByName" parameterType="String" resultMap="bookMap">
+		select * from d_book where name like '%'||#{name}||'%'
+	</select>
+	<select id="selectBooksByAuthor" parameterType="String" resultMap="bookMap">
+		select * from d_book where author like '%'||#{author}||'%'
+	</select>
+	<select id="selectBooksByPress" parameterType="String" resultMap="bookMap">
+		select * from d_book where press like '%'||#{press}||'%'
+	</select>
+	<update id="updateBook" parameterType="book">
+		update d_book set name=#{name},author=#{author},cover=#{cover},press=#{press},press_date=#{pressDate},
+		edition=#{edition},print_date=#{printDate},impression=#{impression},isbn=#{isbn},word_num=#{wordNum},page_num=#{pageNum},"size"=#{size},
+		paper=#{paper},pack=#{pack},price=#{price},dprice=#{dprice},create_date=#{createDate},editor_recommend=#{editorRecommend},content_abstract=#{contentAbstract}
+		,author_abstract=#{authorAbstract},director=#{director},media_commentary=#{mediaCommentary},sale=#{sale},stock=#{stock},category_id=#{categoryId}  where id=#{id}
+	</update>
+	<select id="selectBookById" parameterType="String" resultMap="bookMap">
+		select * from d_book where id=#{id}
+	</select>
+	<delete id="deleteBook" parameterType="String">
+		delete from d_book where id=#{id}
+	</delete>
+	<select id="selectBooksBySale" resultMap="bookMap">
+		select rownum ,e.* from d_book e where rownum &lt; 9 order by sale desc
+	</select>
+	
+	<select id="selectBooksByDate" resultMap="bookMap">
+		select rownum ,e.* from d_book e where rownum &lt; 9 order by create_date desc
+	</select>
+	
+	<select id="selectBooksByDateAndSale" resultMap="bookMap">
+		select rownum ,e.* from (select rownum ,e1.* from d_book e1 where rownum &lt; 9 order by create_date desc) e 
+		where rownum &lt; 9 order by sale desc
+	</select>
+	
+	<select id="selectAllByScendCategory" resultMap="bookMap">
+		select e.* from(select rownum r, b.* from d_category c left join 
+		d_book b on c.id=b.category_id where c.id=#{2})e where r between #{0} and #{1}
+	</select>
+	
+	<select id="selectCountByScendCategory" resultType="int">
+		select count(*) from (select e.* from(select rownum r, b.* from d_category c left join 
+		d_book b on c.id=b.category_id where c.id=#{2})e)
+	</select>
+	
+	<select id="selectAllByFirstCategory" resultMap="bookMap">
+		 select e.* from (select rownum r, b.* from (select b.id bid from d_category a inner join 
+		d_category b on a.id=b.parent_id where a.id=#{2}) c left join d_book b on c.bid=b.category_id)e where r between #{0} and #{1}
+	</select>
+	<select id="selectCountByFirstCategory" resultType="int">
+		 select count(*) from (select e.* from (select rownum r, b.* from (select b.id bid from d_category a inner join 
+		d_category b on a.id=b.parent_id where a.id=#{2}) c left join d_book b on c.bid=b.category_id)e) 
+	</select>
+	
+</mapper>

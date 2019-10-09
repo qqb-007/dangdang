@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN" "struts-2.1.7.dtd" >
+<struts>
+	<package name="admin" extends="struts-default" namespace="/admin">
+		<action name="admin_*" class="com.baizhi.action.AdminAction" method="{1}">
+			<result name="adminLoginSuccess">/back/main/main.jsp</result>
+			<result name="adminLoginRrror">/back/login.jsp</result>
+		</action>
+		<action name="code" class="com.baizhi.action.AdminAction" method="codeImg">
+		</action>
+	</package>
+	
+	<package name="category" extends="struts-default" namespace="/category">
+		<action name="category_*" class="com.baizhi.action.CategoryAction" method="{1}">
+			<result name="showAllCategorySuccess" type="dispatcher">/back/category/show.jsp</result>
+			<result name="addFirstCategorySucess" type="redirectAction">category_showAllCategory</result>
+			
+			<result name="showAllScendCategory1Success" type="dispatcher">/back/book/update.jsp</result>
+			<result name="showAllScendCategorySuccess" type="dispatcher">/back/book/add.jsp</result>
+			<result name="removeCategorySuccess" type="redirectAction">category_showAllCategory</result>
+			<result name="addScendCategorySuccess" type="redirectAction">category_showAllCategory</result>
+			<result name="showAllFirstCategorySuccess" type="dispatcher">/back/category/add-second.jsp</result>
+		</action>
+	</package>
+	
+	<package name="book" extends="struts-default" namespace="/book">
+		<action name="book_*" class="com.baizhi.action.BookAction" method="{1}">
+			<result name="showAllBooksSuccess" type="dispatcher">/back/book/show.jsp</result>
+			
+			<result name="removeBookSuccess" type="redirectAction">book_showAllBooks</result>
+			<result name="updateBookSuccess" type="redirectAction">book_showAllBooks</result>
+			<result name="qureyBookByIdSuccess" type="chain">
+				<param name="namespace">/category</param>
+				<param name="actionName">category_showAllScendCategory1</param>
+			</result>
+			<result name="showBooksByFactorSuccess" type="dispatcher">/back/book/show.jsp</result>
+			<result name="addBookSuccess" type="redirectAction">book_showAllBooks</result>
+			
+		</action>
+	</package>
+	<package name="main" extends="struts-default" namespace="/main">
+		<action name="main_*" class="com.baizhi.action.MainAction" method="{1}">
+		
+			<result name="showBookActionSuccess" type="dispatcher">/front/main/book_detail.jsp</result>
+			<result name="scendActionSuccess" type="dispatcher">/front/main/book_list.jsp</result>	
+			<result name="showOnFrontSuccess" type="dispatcher">/front/main/main.jsp</result>	
+		</action>
+	</package>
+</struts>
